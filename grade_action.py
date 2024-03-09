@@ -45,7 +45,10 @@ if (
     print("Step 7 latest image is not being properly removed")
 if "push" in steps[7]["with"] and steps[7]["with"]["push"] != True:
     print("Step 8 should not push the built images")
-tags = steps[7]["with"]["tags"].split(",")
+tags = re.split("\n|,", steps[7]["with"]["tags"])
+if len(tags) > 0 and tags[0][0] == "-":
+    tags = [tag[1:] for tag in tags]
+tags = [tag.strip() for tag in tags if tag]
 if (
     len(tags) != 2
     or "123456789123.dkr.ecr.us-west-2.amazonaws.com/cs40:latest" not in tags
