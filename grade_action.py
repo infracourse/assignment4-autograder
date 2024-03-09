@@ -28,7 +28,10 @@ steps = yaml.safe_load(rendered_yaml)["jobs"]["build-and-push"]["steps"]
 
 if steps[5]["with"]["push"] != False:
     print("Step 6 should not push the built images")
-tags = steps[5]["with"]["tags"].split(",")
+tags = re.split("\n|,", steps[5]["with"]["tags"])
+if len(tags) > 0 and tags[0][0] == "-":
+    tags = [tag[1:] for tag in tags]
+tags = [tag.strip() for tag in tags if tag]
 if (
     len(tags) != 2
     or "123456789123.dkr.ecr.us-west-2.amazonaws.com/cs40:latest" not in tags
